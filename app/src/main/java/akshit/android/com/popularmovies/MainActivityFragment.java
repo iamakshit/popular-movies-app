@@ -13,13 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -34,11 +37,10 @@ public class MainActivityFragment extends Fragment {
     private MovieAdapter movieAdapter;
     public static String TAG = MainActivityFragment.class.getSimpleName();
 
-    Movie[] movies = {
-            new Movie("Captain America", "It has captain america", "5", new Date()),
-            new Movie("Iron Man", "It has iron man", "4", new Date()),
-            new Movie("Avengers", "It has all", "3", new Date()),
-            new Movie("Thor", "It has thor", "1", new Date()),
+    Movie[] sampleMovies = {
+            new Movie("Captain America", "It has captain america", "5", ""," "),
+            new Movie("Iron Man", "It has iron man", "4", ""," "),
+            new Movie("Avengers", "It has all", "3", ""," "),
     };
 
     public MainActivityFragment() {
@@ -56,11 +58,44 @@ public class MainActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridView = (GridView) rootView.findViewById(R.id.gridView);
-        Log.i("MainActivityFragment", "Movies [0]" + movies[0].plotSummary + movies[0].title);
-        movieAdapter = new MovieAdapter(getActivity(), Arrays.asList(movies));
+        Log.i("MainActivityFragment", "Movies [0]" + sampleMovies[0].plotSummary + sampleMovies[0].title);
+        movieAdapter = new MovieAdapter(getActivity(), Arrays.asList(sampleMovies));
         gridView.setAdapter(movieAdapter);
 
         return rootView;
+
+    }
+
+    private Movie[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
+            throws JSONException {
+
+        // These are the names of the JSON objects that need to be extracted.
+        final String MDB_TITLE = "original_title";
+        final String MDB_OVERVIEW = "overview";
+        final String MDB_POST = "poster_path";
+        final String MDB_RATE = "vote_average";
+        final String MDB_RELEASEDATE = "release_date";
+        final String MDB_LIST = "results";
+
+        JSONObject movieDBJson = new JSONObject(forecastJsonStr);
+        JSONArray movieDBArray = movieDBJson.getJSONArray(MDB_LIST);
+        Movie[] movies = new Movie[numDays];
+        for (int i = 0; i < movieDBArray.length(); i++) {
+
+            JSONObject movieData = movieDBArray.getJSONObject(i);
+
+
+            String title = movieData.getString(MDB_OVERVIEW);
+            String plotSummary = movieData.getString(MDB_OVERVIEW);
+            String userRating = movieData.getString(MDB_RATE);
+            String releaseDate = movieData.getString(MDB_RELEASEDATE);
+            String posterPath = movieData.getString(MDB_POST);
+            Movie movie = new Movie(title, plotSummary, userRating, releaseDate, posterPath);
+            movies[i] = movie;
+
+        }
+
+        return movies;
 
     }
 
@@ -86,7 +121,7 @@ public class MainActivityFragment extends Fragment {
             task.execute(sortMethod);
     }
 
-    public class FetchMoviePosterTask extends AsyncTask<String, Void, String> {
+    public class FetchMoviePosterTask extends AsyncTask<String, Void, Movie[]> {
 
         @Override
         protected void onPreExecute() {
@@ -96,7 +131,7 @@ public class MainActivityFragment extends Fragment {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected Movie[] doInBackground(String... params) {
 
 
             if (params == null) {
@@ -113,11 +148,12 @@ public class MainActivityFragment extends Fragment {
             final String SORT_PARAM = "sort_by";
             final String API_PARAM = "api_key";
             final String API_KEY = "352d4079b8281b8afc99cb142fa05a0e";
-
+            int num=20;
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String jsonStr = null;
             Log.i(TAG, "Starting ...");
+            Movie[] data = new Movie[num];
 
             try {
                 Uri buildUri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_PARAM, API_KEY).appendQueryParameter(SORT_PARAM, sortMethod).build();
@@ -145,8 +181,13 @@ public class MainActivityFragment extends Fragment {
                 }
 
                 jsonStr = buffer.toString();
-
+                try {
+                    data= getWeatherDataFromJson(jsonStr,num);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 Log.i(TAG, "JsonStr = " + jsonStr);
+
 
             } catch (IOException e) {
                 Log.e(TAG, "IOException", e);
@@ -166,13 +207,13 @@ public class MainActivityFragment extends Fragment {
                 }
             }
 
-            return jsonStr;
+            return data;
         }
 
         @Override
-        protected void onPostExecute(String data) {
+        protected void onPostExecute(Movie[] data) {
             Log.i(TAG, "Inside onPostExecute method");
-
+            Log.i(TAG,"movie size : "+data.length);
             super.onPostExecute(data);
         }
 
