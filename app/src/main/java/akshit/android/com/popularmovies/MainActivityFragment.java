@@ -1,5 +1,6 @@
 package akshit.android.com.popularmovies;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -11,7 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -35,13 +38,9 @@ import java.util.concurrent.TimeUnit;
 public class MainActivityFragment extends Fragment {
 
     private MovieAdapter movieAdapter;
+    private static ArrayList<Movie> movies;
     public static String TAG = MainActivityFragment.class.getSimpleName();
 
-    Movie[] sampleMovies = {
-            new Movie("Captain America", "It has captain america", "5", ""," "),
-            new Movie("Iron Man", "It has iron man", "4", ""," "),
-            new Movie("Avengers", "It has all", "3", ""," "),
-    };
 
     public MainActivityFragment() {
     }
@@ -57,10 +56,24 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        GridView gridView = (GridView) rootView.findViewById(R.id.gridView);
-        Log.i("MainActivityFragment", "Movies [0]" + sampleMovies[0].plotSummary + sampleMovies[0].title);
-        movieAdapter = new MovieAdapter(getActivity(), Arrays.asList(sampleMovies));
+        final GridView gridView = (GridView) rootView.findViewById(R.id.gridView);
+        movieAdapter = new MovieAdapter(getActivity(), new ArrayList<Movie>());
         gridView.setAdapter(movieAdapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Context context = getActivity().getApplicationContext();
+                Movie movie = (Movie) gridView.getAdapter().getItem(position);
+
+                Toast.makeText(context, "Following info: " + movie.title, Toast.LENGTH_SHORT).show();
+
+                // Intent intent = new Intent(context, DetailActivity.class).putExtra(Intent.EXTRA_TEXT, text);
+                // startActivity(intent);
+
+
+            }
+        });
 
         return rootView;
 
@@ -85,7 +98,7 @@ public class MainActivityFragment extends Fragment {
             JSONObject movieData = movieDBArray.getJSONObject(i);
 
 
-            String title = movieData.getString(MDB_OVERVIEW);
+            String title = movieData.getString(MDB_TITLE);
             String plotSummary = movieData.getString(MDB_OVERVIEW);
             String userRating = movieData.getString(MDB_RATE);
             String releaseDate = movieData.getString(MDB_RELEASEDATE);
@@ -148,7 +161,7 @@ public class MainActivityFragment extends Fragment {
             final String SORT_PARAM = "sort_by";
             final String API_PARAM = "api_key";
             final String API_KEY = "352d4079b8281b8afc99cb142fa05a0e";
-            int num=20;
+            int num = 20;
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String jsonStr = null;
@@ -182,7 +195,7 @@ public class MainActivityFragment extends Fragment {
 
                 jsonStr = buffer.toString();
                 try {
-                    data= getWeatherDataFromJson(jsonStr,num);
+                    data = getWeatherDataFromJson(jsonStr, num);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -213,7 +226,15 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(Movie[] data) {
             Log.i(TAG, "Inside onPostExecute method");
-            Log.i(TAG,"movie size : "+data.length);
+            Log.i(TAG, "movie size : " + data.length);
+
+            movieAdapter.clear();
+            movies.clear();
+            for (Movie movie : data) {
+                movieAdapter.add(movie);
+                movies.add(movie);
+            }
+
             super.onPostExecute(data);
         }
 
