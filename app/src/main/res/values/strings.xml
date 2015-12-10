@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">PopularMovies</string>
     <string name="action_settings">Settings</string>
+    <string name="pref_sort_key">sortMethod</string>
+    <string name="pref_sort_label">Sort Method</string>
+    <string name="pref_sort_default">vote_average.desc</string>
 </resources>

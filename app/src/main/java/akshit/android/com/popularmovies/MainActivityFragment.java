@@ -115,9 +115,9 @@ public class MainActivityFragment extends Fragment {
     public void fetchMoviePosterTask() {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        //  String pinCode = prefs.getString(getString(R.string.pref_location_key);
-        String sortMethod = "vote_average.desc";
 
+        String sortMethod = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_default));
+        Log.i(TAG, "sortMethod =" + sortMethod);
         FetchMoviePosterTask task = new FetchMoviePosterTask();
 
         int corePoolSize = 60;
@@ -229,7 +229,11 @@ public class MainActivityFragment extends Fragment {
             Log.i(TAG, "movie size : " + data.length);
 
             movieAdapter.clear();
-            movies.clear();
+            if (movies != null) {
+                movies.clear();
+            } else {
+                movies = new ArrayList<Movie>();
+            }
             for (Movie movie : data) {
                 movieAdapter.add(movie);
                 movies.add(movie);
