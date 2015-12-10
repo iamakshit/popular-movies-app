@@ -201,7 +201,6 @@ public class MainActivityFragment extends Fragment {
                 }
                 Log.i(TAG, "JsonStr = " + jsonStr);
 
-
             } catch (IOException e) {
                 Log.e(TAG, "IOException", e);
 
