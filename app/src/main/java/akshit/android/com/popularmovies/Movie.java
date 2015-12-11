@@ -1,9 +1,11 @@
 package akshit.android.com.popularmovies;
 
+import java.io.Serializable;
+
 /**
  * Created by akshit on 9/12/15.
  */
-public class Movie {
+public class Movie implements Serializable{
 
 
     String title;
