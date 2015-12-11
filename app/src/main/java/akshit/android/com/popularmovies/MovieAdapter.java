@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -30,17 +32,9 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
                     R.layout.movie_display, parent, false);
         }
 
-
-        TextView plotSummary = (TextView) convertView.findViewById(R.id.movie_plotSummary);
-        plotSummary.setText(movie.plotSummary);
-
-
-        TextView userRating = (TextView) convertView.findViewById(R.id.movie_userRating);
-        userRating.setText(movie.userRating);
-
-
-        TextView title = (TextView) convertView.findViewById(R.id.movie_title);
-        title.setText(movie.title);
+        ImageView moviePoster= (ImageView) convertView.findViewById(R.id.movie_poster);
+        Picasso.with(getContext()).load(movie.posterPath).into(moviePoster);
+        moviePoster.setAdjustViewBounds(true);
 
         return convertView;
     }

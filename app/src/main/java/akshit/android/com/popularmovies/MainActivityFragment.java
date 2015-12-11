@@ -40,7 +40,7 @@ public class MainActivityFragment extends Fragment {
     private MovieAdapter movieAdapter;
     private static ArrayList<Movie> movies;
     public static String TAG = MainActivityFragment.class.getSimpleName();
-
+    public static String imagePath="http://image.tmdb.org/t/p/w185/";
 
     public MainActivityFragment() {
     }
@@ -234,6 +234,7 @@ public class MainActivityFragment extends Fragment {
                 movies = new ArrayList<Movie>();
             }
             for (Movie movie : data) {
+                movie.posterPath=imagePath+movie.posterPath;
                 movieAdapter.add(movie);
                 movies.add(movie);
             }
