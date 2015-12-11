@@ -1,11 +1,17 @@
 package akshit.android.com.popularmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -16,6 +22,14 @@ public class DetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (savedInstanceState == null) {
+            Log.i("DetailsActivity", "savedInstanceState is null");
+            // During initial setup, plug in the details fragment.
+            DetailsActivityFragment details = new DetailsActivityFragment();
+            details.setArguments(getIntent().getExtras());
+            getSupportFragmentManager().beginTransaction().add(
+                    android.R.id.content, details).commit();
+        }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -26,4 +40,35 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
+    public static class DetailsActivityFragment extends Fragment {
+
+        public static Movie movie;
+
+        public DetailsActivityFragment() {
+            setHasOptionsMenu(true);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            Log.i("DetailsActivity", "onCreateView called");
+
+            View rootView = inflater.inflate(R.layout.fragment_details, container, false);
+
+
+            // The detail Activity called via intent.  Inspect the intent for forecast data.
+            Intent intent = getActivity().getIntent();
+
+            if (intent != null && intent.hasExtra("movie")) {
+                movie = (Movie) intent.getSerializableExtra("movie");
+                Log.i("DetailsActivity", movie.title);
+
+                ((TextView) rootView.findViewById(R.id.movie_title))
+                        .setText(movie.title);
+            }
+
+            return rootView;
+        }
+
+    }
 }

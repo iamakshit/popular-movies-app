@@ -1,6 +1,7 @@
 package akshit.android.com.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -40,7 +41,7 @@ public class MainActivityFragment extends Fragment {
     private MovieAdapter movieAdapter;
     private static ArrayList<Movie> movies;
     public static String TAG = MainActivityFragment.class.getSimpleName();
-    public static String imagePath="http://image.tmdb.org/t/p/w185/";
+    public static String imagePath = "http://image.tmdb.org/t/p/w185/";
 
     public MainActivityFragment() {
     }
@@ -68,8 +69,8 @@ public class MainActivityFragment extends Fragment {
 
                 Toast.makeText(context, "Following info: " + movie.title, Toast.LENGTH_SHORT).show();
 
-                // Intent intent = new Intent(context, DetailActivity.class).putExtra(Intent.EXTRA_TEXT, text);
-                // startActivity(intent);
+                Intent intent = new Intent(context, DetailsActivity.class).putExtra("movie", movie);
+                startActivity(intent);
 
 
             }
@@ -234,7 +235,7 @@ public class MainActivityFragment extends Fragment {
                 movies = new ArrayList<Movie>();
             }
             for (Movie movie : data) {
-                movie.posterPath=imagePath+movie.posterPath;
+                movie.posterPath = imagePath + movie.posterPath;
                 movieAdapter.add(movie);
                 movies.add(movie);
             }
