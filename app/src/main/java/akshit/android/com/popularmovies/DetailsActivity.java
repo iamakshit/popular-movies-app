@@ -11,7 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -65,6 +68,15 @@ public class DetailsActivity extends AppCompatActivity {
 
                 ((TextView) rootView.findViewById(R.id.movie_title))
                         .setText(movie.title);
+
+                ((TextView) rootView.findViewById(R.id.user_rating)).setText(movie.userRating);
+
+                ((TextView) rootView.findViewById(R.id.plot_summary)).setText(movie.plotSummary);
+
+                ((TextView) rootView.findViewById(R.id.release_date)).setText(movie.releaseDate);
+                ImageView moviePoster = (ImageView) rootView.findViewById(R.id.movie_poster);
+                Picasso.with(getContext()).load(movie.posterPath).into(moviePoster);
+                moviePoster.setAdjustViewBounds(true);
             }
 
             return rootView;
