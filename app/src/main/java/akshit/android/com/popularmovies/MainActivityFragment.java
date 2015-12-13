@@ -44,7 +44,7 @@ public class MainActivityFragment extends Fragment {
     private static ArrayList<Movie> movies;
     public static String TAG = MainActivityFragment.class.getSimpleName();
     public static String imagePath = "http://image.tmdb.org/t/p/w185/";
-    final static String API_KEY = "352d4079b8281b8afc99cb142fa05a0e";
+    final static String API_KEY = "<API_KEY>";
 
     public MainActivityFragment() {
     }
