@@ -3,6 +3,8 @@ package akshit.android.com.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -42,7 +44,7 @@ public class MainActivityFragment extends Fragment {
     private static ArrayList<Movie> movies;
     public static String TAG = MainActivityFragment.class.getSimpleName();
     public static String imagePath = "http://image.tmdb.org/t/p/w185/";
-    final static String API_KEY = "<PUT_API_KEY_HERE>";
+    final static String API_KEY = "352d4079b8281b8afc99cb142fa05a0e";
 
     public MainActivityFragment() {
     }
@@ -169,6 +171,10 @@ public class MainActivityFragment extends Fragment {
             Log.i(TAG, "Starting ...");
             Movie[] data = new Movie[num];
 
+            if (!isOnline(getActivity())) {
+                Log.i(TAG, "The app is offline");
+                return null;
+            }
             try {
                 Uri buildUri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_PARAM, API_KEY).appendQueryParameter(SORT_PARAM, sortMethod).build();
                 URL url = new URL(buildUri.toString());
@@ -226,6 +232,11 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(Movie[] data) {
             Log.i(TAG, "Inside onPostExecute method");
+
+            if (data == null) {
+                super.onPostExecute(data);
+                return;
+            }
             Log.i(TAG, "movie size : " + data.length);
 
             movieAdapter.clear();
@@ -243,5 +254,17 @@ public class MainActivityFragment extends Fragment {
             super.onPostExecute(data);
         }
 
+    }
+
+    //Reffering and using the method by code reviewer for comments
+    public boolean isOnline(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        return isConnected;
     }
 }
