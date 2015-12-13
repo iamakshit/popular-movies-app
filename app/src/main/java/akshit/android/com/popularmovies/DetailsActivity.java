@@ -67,13 +67,13 @@ public class DetailsActivity extends AppCompatActivity {
                 Log.i("DetailsActivity", movie.title);
 
                 ((TextView) rootView.findViewById(R.id.movie_title))
-                        .setText(movie.title);
+                        .setText("Title : "+movie.title);
 
-                ((TextView) rootView.findViewById(R.id.user_rating)).setText(movie.userRating);
+                ((TextView) rootView.findViewById(R.id.user_rating)).setText("User Rating : "+movie.userRating);
 
-                ((TextView) rootView.findViewById(R.id.plot_summary)).setText(movie.plotSummary);
+                ((TextView) rootView.findViewById(R.id.plot_summary)).setText("Summary : "+movie.plotSummary);
 
-                ((TextView) rootView.findViewById(R.id.release_date)).setText(movie.releaseDate);
+                ((TextView) rootView.findViewById(R.id.release_date)).setText("Release Date : "+movie.releaseDate);
                 ImageView moviePoster = (ImageView) rootView.findViewById(R.id.movie_poster);
                 Picasso.with(getContext()).load(movie.posterPath).into(moviePoster);
                 moviePoster.setAdjustViewBounds(true);
