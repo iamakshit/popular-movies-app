@@ -42,6 +42,7 @@ public class MainActivityFragment extends Fragment {
     private static ArrayList<Movie> movies;
     public static String TAG = MainActivityFragment.class.getSimpleName();
     public static String imagePath = "http://image.tmdb.org/t/p/w185/";
+    final static String API_KEY = "<PUT_API_KEY_HERE>";
 
     public MainActivityFragment() {
     }
@@ -67,7 +68,7 @@ public class MainActivityFragment extends Fragment {
                 Context context = getActivity().getApplicationContext();
                 Movie movie = (Movie) gridView.getAdapter().getItem(position);
 
-                Toast.makeText(context, "Following info: " + movie.title, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Movie Title: " + movie.title, Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(context, DetailsActivity.class).putExtra("movie", movie);
                 startActivity(intent);
@@ -161,7 +162,6 @@ public class MainActivityFragment extends Fragment {
             final String BASE_URL = "http://api.themoviedb.org/3/discover/movie/?";
             final String SORT_PARAM = "sort_by";
             final String API_PARAM = "api_key";
-            final String API_KEY = "352d4079b8281b8afc99cb142fa05a0e";
             int num = 20;
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
