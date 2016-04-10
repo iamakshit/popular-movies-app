@@ -25,7 +25,7 @@ public class FetchMoviePosterTask extends AsyncTask<String, Void, Movie[]> {
     public static String imagePath = "http://image.tmdb.org/t/p/w185/";
 
     public FetchMoviePosterTask(MovieAdapter movieAdapter) {
-        this.movieAdapter=movieAdapter;
+        this.movieAdapter = movieAdapter;
     }
 
     @Override
@@ -144,7 +144,7 @@ public class FetchMoviePosterTask extends AsyncTask<String, Void, Movie[]> {
         final String MDB_RATE = "vote_average";
         final String MDB_RELEASEDATE = "release_date";
         final String MDB_LIST = "results";
-        final String MDB_ID="id";
+        final String MDB_ID = "id";
 
         JSONObject movieDBJson = new JSONObject(forecastJsonStr);
         JSONArray movieDBArray = movieDBJson.getJSONArray(MDB_LIST);
@@ -159,8 +159,8 @@ public class FetchMoviePosterTask extends AsyncTask<String, Void, Movie[]> {
             String userRating = movieData.getString(MDB_RATE);
             String releaseDate = movieData.getString(MDB_RELEASEDATE);
             String posterPath = movieData.getString(MDB_POST);
-            String id=movieData.getString(MDB_ID);
-            Movie movie = new Movie(title, plotSummary, userRating, releaseDate, posterPath,id);
+            String id = movieData.getString(MDB_ID);
+            Movie movie = new Movie(title, plotSummary, userRating, releaseDate, posterPath, id);
             movies[i] = movie;
 
         }

@@ -14,7 +14,7 @@ public class Movie implements Serializable{
     String userRating;
     String releaseDate;
     String posterPath;
-
+    String youTubeVideoLink;
     public Movie() {
 
     }
@@ -28,5 +28,11 @@ public class Movie implements Serializable{
         this.id=id;
     }
 
+    public String getYouTubeVideoLink() {
+        return youTubeVideoLink;
+    }
 
+    public void setYouTubeVideoLink(String youTubeVideoLink) {
+        this.youTubeVideoLink = youTubeVideoLink;
+    }
 }

@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 public class MainActivityFragment extends Fragment {
 
     private MovieAdapter movieAdapter;
+    private Movie movie;
     public static String TAG = MainActivityFragment.class.getSimpleName();
 
     public MainActivityFragment() {
@@ -63,7 +64,7 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Context context = getActivity().getApplicationContext();
-                Movie movie = (Movie) gridView.getAdapter().getItem(position);
+                movie = (Movie) gridView.getAdapter().getItem(position);
 
                 Toast.makeText(context, "Following info: " + movie.title, Toast.LENGTH_SHORT).show();
 
