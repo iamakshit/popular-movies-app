@@ -66,6 +66,12 @@
                 android:text="Mark as Favourite"
                 android:id="@+id/fav_button" />
 
+            <Button
+                android:layout_width="115dp"
+                android:layout_height="wrap_content"
+                android:text="Trailer"
+                android:id="@+id/trailer" />
+
         </LinearLayout>
 
     <ScrollView
