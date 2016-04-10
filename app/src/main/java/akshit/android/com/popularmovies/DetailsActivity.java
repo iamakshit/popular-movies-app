@@ -1,7 +1,9 @@
 package akshit.android.com.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,12 +15,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -83,18 +89,34 @@ public class DetailsActivity extends AppCompatActivity {
                 moviePoster.setAdjustViewBounds(true);
 
                 fetchMoviePosterTask(movie);
+                fetchMovieReviewTask(movie);
+                Log.i("DetailsActivity", "YoutubeLink in DetailActivity is " + movie.getYouTubeVideoLink());
 
             }
+
+            Button button = (Button) rootView.findViewById(R.id.trailer);
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // Perform action on click
+                    Context context = getActivity().getApplicationContext();
+
+                    Toast.makeText(context, "Playing trailer of movie : " + movie.title, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + movie.getYouTubeVideoLink()));
+                    startActivity(intent);
+
+
+                }
+            });
 
             return rootView;
         }
 
 
-        public void fetchMoviePosterTask(Movie movie) {
+        public void fetchMovieReviewTask(Movie movie) {
 
-            FetchMovieVideoTask task;
-            task = new FetchMovieVideoTask(movie);
-
+            FetchMovieReviewTask task;
+            task = new FetchMovieReviewTask();
+            ArrayList<MovieReview> result = null;
             int corePoolSize = 60;
             int maximumPoolSize = 80;
             int keepAliveTime = 10;
@@ -107,6 +129,49 @@ public class DetailsActivity extends AppCompatActivity {
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, movie.id);
             else
                 task.execute(movie.id);
+            try {
+                result = task.get();
+                Log.i("DetailsActivity", "MovieReviewResult :  " + result);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+          //  movie.setYouTubeVideoLink(result);
+
+        }
+
+        public void fetchMoviePosterTask(Movie movie) {
+
+            FetchMovieVideoTask task;
+            task = new FetchMovieVideoTask(movie);
+            String result = null;
+            int corePoolSize = 60;
+            int maximumPoolSize = 80;
+            int keepAliveTime = 10;
+            BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>(maximumPoolSize);
+            Executor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
+            Log.i("DetailsActivity", "Refresh Action being called");
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, movie.id);
+            else
+                task.execute(movie.id);
+            try {
+                result = task.get();
+                Log.i("DetailsActivity", "result :  " + result);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            movie.setYouTubeVideoLink(result);
+
         }
     }
 }

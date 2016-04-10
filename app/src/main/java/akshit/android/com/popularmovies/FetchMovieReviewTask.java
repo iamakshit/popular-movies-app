@@ -18,22 +18,23 @@ import java.util.ArrayList;
 /**
  * Created by akshitgupta on 10/04/16.
  */
-public class FetchMovieVideoTask extends AsyncTask<String, Void, String> {
-    public static String TAG = FetchMovieVideoTask.class.getSimpleName();
+public class FetchMovieReviewTask extends AsyncTask<String,Void,ArrayList<MovieReview>> {
+
+    public static String TAG = FetchMovieReviewTask.class.getSimpleName();
     final String API_PARAM = "api_key";
     final String API_KEY = "352d4079b8281b8afc99cb142fa05a0e";
     final String MDB_LIST = "results";
-    final String MDB_YOUTUBE = "key";
-    String BASE_URL = "https://api.themoviedb.org/3/movie/{id}/videos?";
+    final String MDB_AUTHOR = "author";
+    final String MDB_CONTENT = "content";
 
-    private Movie movie;
 
-    public FetchMovieVideoTask(Movie movie) {
-        this.movie = movie;
+    String BASE_URL = "https://api.themoviedb.org/3/movie/{id}/reviews?";
+
+    public FetchMovieReviewTask() {
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected ArrayList<MovieReview> doInBackground(String... params) {
 
         if (params == null) {
             return null;
@@ -45,7 +46,7 @@ public class FetchMovieVideoTask extends AsyncTask<String, Void, String> {
             return null;
         }
 
-        String youTubeLink = null;
+        ArrayList<MovieReview> movieReviews= new ArrayList<>();
         int num = 20;
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -84,8 +85,16 @@ public class FetchMovieVideoTask extends AsyncTask<String, Void, String> {
 
                 JSONObject movieDBJson = new JSONObject(jsonStr);
                 JSONArray movieDBArray = movieDBJson.getJSONArray(MDB_LIST);
-                JSONObject movieData = movieDBArray.getJSONObject(0);
-                youTubeLink = movieData.getString(MDB_YOUTUBE);
+                for(int i=0;i<movieDBArray.length();i++)
+                {
+                    JSONObject movieData = movieDBArray.getJSONObject(i);
+                    String author=movieData.getString(MDB_AUTHOR);
+                    String content= movieData.getString(MDB_CONTENT);
+                    MovieReview movieReview= new MovieReview();
+                    movieReview.setAuthor(author);
+                    movieReview.setContent(content);
+                    movieReviews.add(movieReview);
+                }
 
 
             } catch (JSONException e) {
@@ -109,17 +118,15 @@ public class FetchMovieVideoTask extends AsyncTask<String, Void, String> {
                 }
             }
         }
-        return youTubeLink;
+        return movieReviews;
     }
 
 
     @Override
-    protected void onPostExecute(String youtubeLink) {
+    protected void onPostExecute(ArrayList<MovieReview> movieReviews) {
         Log.i(TAG, "Inside onPostExecute method");
-        Log.i(TAG, "Youtube video link: " + youtubeLink);
-        movie.setYouTubeVideoLink(youtubeLink);
-        Log.i(TAG, "Youtube video link in movie class: " + movie.getYouTubeVideoLink());
-        super.onPostExecute(youtubeLink);
+        Log.i(TAG,"MovieReviews Length "+movieReviews.size());
+        super.onPostExecute(movieReviews);
     }
 
 
