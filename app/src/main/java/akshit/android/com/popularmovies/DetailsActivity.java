@@ -15,11 +15,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.widget.ListView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class DetailsActivity extends AppCompatActivity {
 
             // The detail Activity called via intent.  Inspect the intent for forecast data.
             Intent intent = getActivity().getIntent();
-
+            ArrayList<String> list= new ArrayList<>();
             if (intent != null && intent.hasExtra("movie")) {
                 movie = (Movie) intent.getSerializableExtra("movie");
                 Log.i("DetailsActivity", movie.title);
@@ -89,10 +90,14 @@ public class DetailsActivity extends AppCompatActivity {
                 moviePoster.setAdjustViewBounds(true);
 
                 fetchMoviePosterTask(movie);
-                fetchMovieReviewTask(movie);
+                list=fetchMovieReviewTask(movie);
                 Log.i("DetailsActivity", "YoutubeLink in DetailActivity is " + movie.getYouTubeVideoLink());
 
             }
+
+            ArrayAdapter<String> listAdapter= new ArrayAdapter<String>(getActivity(),R.layout.list_review,R.id.list_item_textview,list);
+            ListView listView = (ListView) rootView.findViewById(R.id.listview_reviews);
+            listView.setAdapter(listAdapter);
 
             Button button = (Button) rootView.findViewById(R.id.trailer);
             button.setOnClickListener(new View.OnClickListener() {
@@ -112,8 +117,9 @@ public class DetailsActivity extends AppCompatActivity {
         }
 
 
-        public void fetchMovieReviewTask(Movie movie) {
+        public ArrayList<String> fetchMovieReviewTask(Movie movie) {
 
+            ArrayList<String> list= new ArrayList<String>();
             FetchMovieReviewTask task;
             task = new FetchMovieReviewTask();
             ArrayList<MovieReview> result = null;
@@ -139,8 +145,15 @@ public class DetailsActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-          //  movie.setYouTubeVideoLink(result);
+            for(MovieReview movieReview: result)
+            {
+                StringBuilder input= new StringBuilder();
+                input.append(movieReview.getAuthor()).append("\n").append(movieReview.getContent());
+                list.add(input.toString());
+            }
 
+          //  movie.setYouTubeVideoLink(result);
+            return list;
         }
 
         public void fetchMoviePosterTask(Movie movie) {
