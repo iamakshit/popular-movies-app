@@ -25,12 +25,11 @@ public class FetchMovieVideoTask extends AsyncTask<String, Void, String> {
     final String MDB_LIST = "results";
     final String MDB_YOUTUBE = "key";
     String BASE_URL = "https://api.themoviedb.org/3/movie/{id}/videos?";
-  
+
     private Movie movie;
 
-    public FetchMovieVideoTask(Movie movie)
-    {
-        this.movie=movie;
+    public FetchMovieVideoTask(Movie movie) {
+        this.movie = movie;
     }
 
     @Override
@@ -46,17 +45,17 @@ public class FetchMovieVideoTask extends AsyncTask<String, Void, String> {
             return null;
         }
 
-        String youTubeLink=null;
+        String youTubeLink = null;
         int num = 20;
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String jsonStr = null;
         Log.i(TAG, "Starting ...");
-        Log.i(TAG, "MovieId is "+movieId);
+        Log.i(TAG, "MovieId is " + movieId);
         try {
-            BASE_URL=BASE_URL.replace("{id}", movieId);
+            BASE_URL = BASE_URL.replace("{id}", movieId);
             Uri buildUri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_PARAM, API_KEY).build();
-            Log.i(TAG,"Uri being called = "+buildUri.toString());
+            Log.i(TAG, "Uri being called = " + buildUri.toString());
             URL url = new URL(buildUri.toString());
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
@@ -86,8 +85,7 @@ public class FetchMovieVideoTask extends AsyncTask<String, Void, String> {
                 JSONObject movieDBJson = new JSONObject(jsonStr);
                 JSONArray movieDBArray = movieDBJson.getJSONArray(MDB_LIST);
                 JSONObject movieData = movieDBArray.getJSONObject(0);
-                 youTubeLink = movieData.getString(MDB_YOUTUBE);
-
+                youTubeLink = movieData.getString(MDB_YOUTUBE);
 
 
             } catch (JSONException e) {
@@ -115,15 +113,13 @@ public class FetchMovieVideoTask extends AsyncTask<String, Void, String> {
     }
 
 
-
     @Override
     protected void onPostExecute(String youtubeLink) {
         Log.i(TAG, "Inside onPostExecute method");
-        Log.i(TAG, "Youtube video link: "+youtubeLink);
+        Log.i(TAG, "Youtube video link: " + youtubeLink);
         movie.setYouTubeVideoLink(youtubeLink);
         super.onPostExecute(youtubeLink);
     }
-
 
 
 }

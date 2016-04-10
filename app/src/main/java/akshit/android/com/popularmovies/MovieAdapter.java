@@ -32,7 +32,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
                     R.layout.movie_display, parent, false);
         }
 
-        ImageView moviePoster= (ImageView) convertView.findViewById(R.id.movie_poster);
+        ImageView moviePoster = (ImageView) convertView.findViewById(R.id.movie_poster);
         Picasso.with(getContext()).load(movie.posterPath).into(moviePoster);
         moviePoster.setAdjustViewBounds(true);
 

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by akshit on 9/12/15.
  */
-public class Movie implements Serializable{
+public class Movie implements Serializable {
 
 
     String id;
@@ -15,17 +15,18 @@ public class Movie implements Serializable{
     String releaseDate;
     String posterPath;
     String youTubeVideoLink;
+
     public Movie() {
 
     }
 
-    public Movie(String title, String plotSummary, String userRating, String releaseDate, String posterPath,String id) {
+    public Movie(String title, String plotSummary, String userRating, String releaseDate, String posterPath, String id) {
         this.title = title;
         this.plotSummary = plotSummary;
         this.userRating = userRating;
         this.releaseDate = releaseDate;
-        this.posterPath=posterPath;
-        this.id=id;
+        this.posterPath = posterPath;
+        this.id = id;
     }
 
     public String getYouTubeVideoLink() {

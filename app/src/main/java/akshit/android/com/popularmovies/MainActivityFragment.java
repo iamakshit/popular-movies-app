@@ -80,7 +80,6 @@ public class MainActivityFragment extends Fragment {
     }
 
 
-
     public void fetchMoviePosterTask() {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
