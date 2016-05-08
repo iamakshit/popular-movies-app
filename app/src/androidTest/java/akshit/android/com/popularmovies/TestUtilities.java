@@ -43,7 +43,7 @@ public class TestUtilities extends AndroidTestCase {
     static ContentValues createMovie() {
         // Create a new map of values, where column names are the keys
         ContentValues testValues = new ContentValues();
-        testValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, "123");
+       //    testValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, );
         testValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, "Superman vs Batman");
         testValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_SUMMARY, "This movie is good");
         testValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, "3.5");

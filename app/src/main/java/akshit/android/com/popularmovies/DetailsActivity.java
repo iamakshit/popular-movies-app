@@ -1,7 +1,10 @@
 package akshit.android.com.popularmovies;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ListView;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,6 +32,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import akshit.android.com.popularmovies.data.MovieContract;
+import akshit.android.com.popularmovies.data.utils.CustomException;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -60,6 +67,48 @@ public class DetailsActivity extends AppCompatActivity {
             setHasOptionsMenu(true);
         }
 
+        long addMovie(Movie movie) throws CustomException {
+            long movieId;
+
+            // First, check if the location with this city name exists in the db
+            Cursor movieCursor = getContext().getContentResolver().query(
+                    MovieContract.MovieEntry.CONTENT_URI,
+                    new String[]{MovieContract.MovieEntry._ID},
+                    MovieContract.MovieEntry.COLUMN_MOVIE_TITLE + " = ?",
+                    new String[]{movie.title},
+                    null);
+
+            if (movieCursor.moveToFirst()) {
+                int movieIdIndex = movieCursor.getColumnIndex(MovieContract.MovieEntry._ID);
+                movieId = movieCursor.getLong(movieIdIndex);
+                throw new CustomException("Movie is already present");
+            } else {
+                // Now that the content provider is set up, inserting rows of data is pretty simple.
+                // First create a ContentValues object to hold the data you want to insert.
+
+                ContentValues movieValues = new ContentValues();
+               movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, 1);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, movie.title);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_SUMMARY, movie.plotSummary);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, movie.userRating);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, movie.releaseDate);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_IMAGE, movie.posterPath);
+
+                // Finally, insert location data into the database.
+                Uri insertedUri = getContext().getContentResolver().insert(
+                        MovieContract.MovieEntry.CONTENT_URI,
+                        movieValues
+                );
+
+                // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
+                movieId = ContentUris.parseId(insertedUri);
+            }
+
+            movieCursor.close();
+            // Wait, that worked?  Yes!
+            return movieId;
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -70,7 +119,7 @@ public class DetailsActivity extends AppCompatActivity {
 
             // The detail Activity called via intent.  Inspect the intent for forecast data.
             Intent intent = getActivity().getIntent();
-            ArrayList<String> list= new ArrayList<>();
+            ArrayList<String> list = new ArrayList<>();
             if (intent != null && intent.hasExtra("movie")) {
                 movie = (Movie) intent.getSerializableExtra("movie");
                 Log.i("DetailsActivity", movie.title);
@@ -88,15 +137,31 @@ public class DetailsActivity extends AppCompatActivity {
                 moviePoster.setAdjustViewBounds(true);
 
                 fetchMoviePosterTask(movie);
-                list=fetchMovieReviewTask(movie);
+                list = fetchMovieReviewTask(movie);
                 Log.i("DetailsActivity", "YoutubeLink in DetailActivity is " + movie.getYouTubeVideoLink());
 
             }
 
-            ArrayAdapter<String> listAdapter= new ArrayAdapter<String>(getActivity(),R.layout.list_review,R.id.list_item_textview,list);
+            ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_review, R.id.list_item_textview, list);
             ListView listView = (ListView) rootView.findViewById(R.id.listview_reviews);
             listView.setAdapter(listAdapter);
 
+            Button favButton = (Button) rootView.findViewById(R.id.fav_button);
+            favButton.setOnClickListener(new View.OnClickListener() {
+             public void onClick(View v) {
+
+                 try {
+                     addMovie(movie);
+                     Context context = getActivity().getApplicationContext();
+                     Toast.makeText(context, "Movie has now been marked favourite", Toast.LENGTH_SHORT).show();
+                 } catch (CustomException e) {
+                     Context context = getActivity().getApplicationContext();
+                     Toast.makeText(context, "Movie :" + movie.title+" has already been marked favourite", Toast.LENGTH_SHORT).show();
+                 }
+
+                   }
+                 }
+            );
             Button button = (Button) rootView.findViewById(R.id.trailer);
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -117,7 +182,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         public ArrayList<String> fetchMovieReviewTask(Movie movie) {
 
-            ArrayList<String> list= new ArrayList<String>();
+            ArrayList<String> list = new ArrayList<String>();
             FetchMovieReviewTask task;
             task = new FetchMovieReviewTask();
             ArrayList<MovieReview> result = null;
@@ -143,14 +208,13 @@ public class DetailsActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            for(MovieReview movieReview: result)
-            {
-                StringBuilder input= new StringBuilder();
+            for (MovieReview movieReview : result) {
+                StringBuilder input = new StringBuilder();
                 input.append(movieReview.getAuthor()).append("\n").append(movieReview.getContent());
                 list.add(input.toString());
             }
 
-          //  movie.setYouTubeVideoLink(result);
+            //  movie.setYouTubeVideoLink(result);
             return list;
         }
 
