@@ -35,6 +35,7 @@ public class FetchMoviePosterTask extends AsyncTask<String, Void, Movie[]> {
         super.onPreExecute();
     }
 
+
     @Override
     protected Movie[] doInBackground(String... params) {
 

@@ -78,6 +78,8 @@ public class DetailsActivity extends AppCompatActivity {
                     new String[]{movie.title},
                     null);
 
+
+
             if (movieCursor.moveToFirst()) {
                 int movieIdIndex = movieCursor.getColumnIndex(MovieContract.MovieEntry._ID);
                 movieId = movieCursor.getLong(movieIdIndex);
@@ -86,8 +88,15 @@ public class DetailsActivity extends AppCompatActivity {
                 // Now that the content provider is set up, inserting rows of data is pretty simple.
                 // First create a ContentValues object to hold the data you want to insert.
 
+                movieCursor= getContext().getContentResolver().query(
+                        MovieContract.MovieEntry.CONTENT_URI,
+                        new String[]{MovieContract.MovieEntry._ID},
+                        null,
+                        null,
+                        null);
+
                 ContentValues movieValues = new ContentValues();
-               movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, 1);
+               movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movieCursor.getCount()+1);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, movie.title);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_SUMMARY, movie.plotSummary);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, movie.userRating);
