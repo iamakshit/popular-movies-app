@@ -87,7 +87,7 @@ public class MainActivityFragment extends Fragment {
         String sortMethod = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_default));
         Log.i(TAG, "sortMethod =" + sortMethod);
         FetchMoviePosterTask task;
-        task = new FetchMoviePosterTask(movieAdapter);
+        task = new FetchMoviePosterTask(movieAdapter, getContext());
 
         int corePoolSize = 60;
         int maximumPoolSize = 80;

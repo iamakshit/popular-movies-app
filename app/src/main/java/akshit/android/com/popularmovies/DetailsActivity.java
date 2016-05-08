@@ -88,15 +88,17 @@ public class DetailsActivity extends AppCompatActivity {
                 // Now that the content provider is set up, inserting rows of data is pretty simple.
                 // First create a ContentValues object to hold the data you want to insert.
 
-                movieCursor= getContext().getContentResolver().query(
-                        MovieContract.MovieEntry.CONTENT_URI,
-                        new String[]{MovieContract.MovieEntry._ID},
-                        null,
-                        null,
-                        null);
+            //    movieCursor= getContext().getContentResolver().query(
+              //          MovieContract.MovieEntry.CONTENT_URI,
+                //        new String[]{MovieContract.MovieEntry._ID},
+                  //      null,
+                    //    null,
+                      //  null);
 
+                Log.i(DetailsActivity.class.getName(),"Before inserting " + movie);
                 ContentValues movieValues = new ContentValues();
-               movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movieCursor.getCount()+1);
+                movieValues.put(MovieContract.MovieEntry._ID,movie.id);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID,movie.id);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, movie.title);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_SUMMARY, movie.plotSummary);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, movie.userRating);
@@ -165,7 +167,7 @@ public class DetailsActivity extends AppCompatActivity {
                      Toast.makeText(context, "Movie has now been marked favourite", Toast.LENGTH_SHORT).show();
                  } catch (CustomException e) {
                      Context context = getActivity().getApplicationContext();
-                     Toast.makeText(context, "Movie :" + movie.title+" has already been marked favourite", Toast.LENGTH_SHORT).show();
+                     Toast.makeText(context, "Movie has already been marked favourite", Toast.LENGTH_SHORT).show();
                  }
 
                    }

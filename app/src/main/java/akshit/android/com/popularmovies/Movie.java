@@ -36,4 +36,17 @@ public class Movie implements Serializable {
     public void setYouTubeVideoLink(String youTubeVideoLink) {
         this.youTubeVideoLink = youTubeVideoLink;
     }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", plotSummary='" + plotSummary + '\'' +
+                ", userRating='" + userRating + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", posterPath='" + posterPath + '\'' +
+                ", youTubeVideoLink='" + youTubeVideoLink + '\'' +
+                '}';
+    }
 }
