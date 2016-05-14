@@ -61,16 +61,18 @@
             </LinearLayout>
 
             <Button
-                android:layout_width="115dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="Mark as Favourite"
-                android:id="@+id/fav_button" />
+                android:id="@+id/fav_button"
+                android:background="@drawable/ic_bookmark_black_24dp"
+                />
 
             <Button
-                android:layout_width="115dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Trailer"
-                android:id="@+id/trailer" />
+                android:id="@+id/trailer"
+                android:background="@drawable/ic_play_arrow_black_48dp"
+                />
 
         </LinearLayout>
 
