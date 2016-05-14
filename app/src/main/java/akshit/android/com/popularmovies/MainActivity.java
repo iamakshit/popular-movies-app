@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
             if (savedInstanceState == null) {
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             mTwoPane = false;
+            setSupportActionBar(toolbar);
         }
         Log.i(TAG, "smallestScreenWidthDp :"+String.valueOf(getResources().getConfiguration().smallestScreenWidthDp));
         Log.i(TAG, "mTwoPane value=" + mTwoPane);
