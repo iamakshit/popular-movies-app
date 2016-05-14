@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import akshit.android.com.popularmovies.data.utils.ConstantUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 public class FetchMovieVideoTask extends AsyncTask<String, Void, String> {
     public static String TAG = FetchMovieVideoTask.class.getSimpleName();
     final String API_PARAM = "api_key";
-    final String API_KEY = "352d4079b8281b8afc99cb142fa05a0e";
     final String MDB_LIST = "results";
     final String MDB_YOUTUBE = "key";
     String BASE_URL = "https://api.themoviedb.org/3/movie/{id}/videos?";
@@ -54,7 +54,7 @@ public class FetchMovieVideoTask extends AsyncTask<String, Void, String> {
         Log.i(TAG, "MovieId is " + movieId);
         try {
             BASE_URL = BASE_URL.replace("{id}", movieId);
-            Uri buildUri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_PARAM, API_KEY).build();
+            Uri buildUri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_PARAM, ConstantUtils.API_KEY).build();
             Log.i(TAG, "Uri being called = " + buildUri.toString());
             URL url = new URL(buildUri.toString());
             urlConnection = (HttpURLConnection) url.openConnection();

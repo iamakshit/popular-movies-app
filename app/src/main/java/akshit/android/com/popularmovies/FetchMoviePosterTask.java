@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import akshit.android.com.popularmovies.data.MovieContract;
+import akshit.android.com.popularmovies.data.utils.ConstantUtils;
 
 /**
  * Created by akshitgupta on 10/04/16.
@@ -84,7 +85,7 @@ public class FetchMoviePosterTask extends AsyncTask<String, Void, Movie[]> {
             final String BASE_URL = "http://api.themoviedb.org/3/discover/movie/?";
             final String SORT_PARAM = "sort_by";
             final String API_PARAM = "api_key";
-            final String API_KEY = "352d4079b8281b8afc99cb142fa05a0e";
+
             int num = 20;
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -93,7 +94,7 @@ public class FetchMoviePosterTask extends AsyncTask<String, Void, Movie[]> {
             Movie[] data = new Movie[num];
 
             try {
-                Uri buildUri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_PARAM, API_KEY).appendQueryParameter(SORT_PARAM, sortMethod).build();
+                Uri buildUri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_PARAM, ConstantUtils.API_KEY).appendQueryParameter(SORT_PARAM, sortMethod).build();
                 URL url = new URL(buildUri.toString());
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");

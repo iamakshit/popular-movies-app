@@ -15,6 +15,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+import akshit.android.com.popularmovies.data.utils.ConstantUtils;
+
 /**
  * Created by akshitgupta on 10/04/16.
  */
@@ -22,7 +24,6 @@ public class FetchMovieReviewTask extends AsyncTask<String,Void,ArrayList<MovieR
 
     public static String TAG = FetchMovieReviewTask.class.getSimpleName();
     final String API_PARAM = "api_key";
-    final String API_KEY = "352d4079b8281b8afc99cb142fa05a0e";
     final String MDB_LIST = "results";
     final String MDB_AUTHOR = "author";
     final String MDB_CONTENT = "content";
@@ -55,7 +56,7 @@ public class FetchMovieReviewTask extends AsyncTask<String,Void,ArrayList<MovieR
         Log.i(TAG, "MovieId is " + movieId);
         try {
             BASE_URL = BASE_URL.replace("{id}", movieId);
-            Uri buildUri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_PARAM, API_KEY).build();
+            Uri buildUri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_PARAM, ConstantUtils.API_KEY).build();
             Log.i(TAG, "Uri being called = " + buildUri.toString());
             URL url = new URL(buildUri.toString());
             urlConnection = (HttpURLConnection) url.openConnection();
