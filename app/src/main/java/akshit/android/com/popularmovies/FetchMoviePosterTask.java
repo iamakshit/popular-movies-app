@@ -160,10 +160,13 @@ public class FetchMoviePosterTask extends AsyncTask<String, Void, Movie[]> {
             }
             if(data!=null && data.length>0) {
                 for (Movie movie : data) {
+                    if(movie!=null)
+                    {
                     movie.posterPath = imagePath + movie.posterPath;
                     // Log.i(FetchMoviePosterTask.class.getName(),"Poster path : "+movie.posterPath);
                     movieAdapter.add(movie);
                     movies.add(movie);
+                }
                 }
             }
 
