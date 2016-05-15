@@ -68,9 +68,11 @@ public class MainActivityFragment extends Fragment {
 
                 Toast.makeText(context, "Following info: " + movie.title, Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(context, DetailsActivity.class).putExtra("movie", movie);
-                startActivity(intent);
+               // Intent intent = new Intent(((Callback) context).onItemSelected(movie)).putExtra("movie", movie);
+               // startActivity(intent);
 
+                ((Callback) getActivity())
+                        .onItemSelected(movie);
 
             }
         });
@@ -104,4 +106,10 @@ public class MainActivityFragment extends Fragment {
     }
 
 
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Movie movie);
+    }
 }

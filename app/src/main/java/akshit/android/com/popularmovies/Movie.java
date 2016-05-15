@@ -49,4 +49,6 @@ public class Movie implements Serializable {
                 ", youTubeVideoLink='" + youTubeVideoLink + '\'' +
                 '}';
     }
+
+
 }

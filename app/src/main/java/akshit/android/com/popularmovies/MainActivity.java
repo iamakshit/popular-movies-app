@@ -2,6 +2,7 @@ package akshit.android.com.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,7 @@ import android.view.Menu;
 import android.util.Log;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback{
         private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
     boolean mTwoPane = false;
@@ -57,5 +58,28 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSelected(Movie movie) {
+        if (mTwoPane) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            Bundle args = new Bundle();
+            args.putSerializable(DetailsActivity.DetailsActivityFragment.DETAIL_URI, movie);
+//            args.putParcelable(DetailsActivity.DetailsActivityFragment.DETAIL_URI, (Parcelable) movie);
+
+            DetailsActivity.DetailsActivityFragment fragment = new DetailsActivity.DetailsActivityFragment();
+            fragment.setArguments(args);
+            Log.i("MainActivity","Called onItemSelected method");
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, DetailsActivity.class)
+                    .putExtra("movie", movie);
+            startActivity(intent);
+        }
     }
 }

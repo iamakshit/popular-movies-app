@@ -46,12 +46,21 @@ public class DetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
+
+            Bundle arguments = new Bundle();
+            Log.i("DetailsActivity",getIntent().getSerializableExtra("movie").toString());
+            arguments.putSerializable(DetailsActivityFragment.DETAIL_URI, getIntent().getSerializableExtra("movie"));
+
+            DetailsActivityFragment fragment = new DetailsActivityFragment();
+            fragment.setArguments(arguments);
+
+
             Log.i("DetailsActivity", "savedInstanceState is null");
             // During initial setup, plug in the details fragment.
-            DetailsActivityFragment details = new DetailsActivityFragment();
-            details.setArguments(getIntent().getExtras());
+          //  DetailsActivityFragment details = new DetailsActivityFragment();
+          //  details.setArguments(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction().add(
-                    android.R.id.content, details).commit();
+                    android.R.id.content, fragment).commit();
         }
 
 
@@ -61,7 +70,9 @@ public class DetailsActivity extends AppCompatActivity {
 
     public static class DetailsActivityFragment extends Fragment {
 
+        public static final String DETAIL_URI = "URI";
         public static Movie movie;
+        private Uri mUri;
 
         public DetailsActivityFragment() {
             setHasOptionsMenu(true);
@@ -79,7 +90,6 @@ public class DetailsActivity extends AppCompatActivity {
                     null);
 
 
-
             if (movieCursor.moveToFirst()) {
                 int movieIdIndex = movieCursor.getColumnIndex(MovieContract.MovieEntry._ID);
                 movieId = movieCursor.getLong(movieIdIndex);
@@ -88,17 +98,17 @@ public class DetailsActivity extends AppCompatActivity {
                 // Now that the content provider is set up, inserting rows of data is pretty simple.
                 // First create a ContentValues object to hold the data you want to insert.
 
-            //    movieCursor= getContext().getContentResolver().query(
-              //          MovieContract.MovieEntry.CONTENT_URI,
+                //    movieCursor= getContext().getContentResolver().query(
+                //          MovieContract.MovieEntry.CONTENT_URI,
                 //        new String[]{MovieContract.MovieEntry._ID},
-                  //      null,
-                    //    null,
-                      //  null);
+                //      null,
+                //    null,
+                //  null);
 
-                Log.i(DetailsActivity.class.getName(),"Before inserting " + movie);
+                Log.i(DetailsActivity.class.getName(), "Before inserting " + movie);
                 ContentValues movieValues = new ContentValues();
-                movieValues.put(MovieContract.MovieEntry._ID,movie.id);
-                movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID,movie.id);
+                movieValues.put(MovieContract.MovieEntry._ID, movie.id);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.id);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, movie.title);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_SUMMARY, movie.plotSummary);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, movie.userRating);
@@ -125,6 +135,16 @@ public class DetailsActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             Log.i("DetailsActivity", "onCreateView called");
 
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                movie = (Movie) arguments.getSerializable(DetailsActivityFragment.DETAIL_URI);
+                Log.i("DetailsActivity","There are arguments present = "+movie);
+            }
+            else
+            {
+                Log.i("DetailsActivity","There are NO arguments present");
+            }
+
             View rootView = inflater.inflate(R.layout.fragment_details, container, false);
 
 
@@ -133,6 +153,7 @@ public class DetailsActivity extends AppCompatActivity {
             ArrayList<String> list = new ArrayList<>();
             if (intent != null && intent.hasExtra("movie")) {
                 movie = (Movie) intent.getSerializableExtra("movie");
+            }
                 Log.i("DetailsActivity", movie.title);
 
                 ((TextView) rootView.findViewById(R.id.movie_title))
@@ -151,7 +172,7 @@ public class DetailsActivity extends AppCompatActivity {
                 list = fetchMovieReviewTask(movie);
                 Log.i("DetailsActivity", "YoutubeLink in DetailActivity is " + movie.getYouTubeVideoLink());
 
-            }
+
 
             ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_review, R.id.list_item_textview, list);
             ListView listView = (ListView) rootView.findViewById(R.id.listview_reviews);
@@ -159,19 +180,19 @@ public class DetailsActivity extends AppCompatActivity {
 
             Button favButton = (Button) rootView.findViewById(R.id.fav_button);
             favButton.setOnClickListener(new View.OnClickListener() {
-             public void onClick(View v) {
+                                             public void onClick(View v) {
 
-                 try {
-                     addMovie(movie);
-                     Context context = getActivity().getApplicationContext();
-                     Toast.makeText(context, "Movie has now been marked favourite", Toast.LENGTH_SHORT).show();
-                 } catch (CustomException e) {
-                     Context context = getActivity().getApplicationContext();
-                     Toast.makeText(context, "Movie has already been marked favourite", Toast.LENGTH_SHORT).show();
-                 }
+                                                 try {
+                                                     addMovie(movie);
+                                                     Context context = getActivity().getApplicationContext();
+                                                     Toast.makeText(context, "Movie has now been marked favourite", Toast.LENGTH_SHORT).show();
+                                                 } catch (CustomException e) {
+                                                     Context context = getActivity().getApplicationContext();
+                                                     Toast.makeText(context, "Movie has already been marked favourite", Toast.LENGTH_SHORT).show();
+                                                 }
 
-                   }
-                 }
+                                             }
+                                         }
             );
             Button button = (Button) rootView.findViewById(R.id.trailer);
             button.setOnClickListener(new View.OnClickListener() {

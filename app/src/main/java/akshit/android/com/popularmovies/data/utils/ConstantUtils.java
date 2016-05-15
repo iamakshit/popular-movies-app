@@ -5,5 +5,5 @@ package akshit.android.com.popularmovies.data.utils;
  */
 public class ConstantUtils {
 
-   public static final String API_KEY = "<INSERT-API-KEY-HERE>";
+   public static final String API_KEY = "352d4079b8281b8afc99cb142fa05a0e";
 }
