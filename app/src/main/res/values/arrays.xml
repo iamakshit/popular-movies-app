@@ -10,7 +10,7 @@
 
     <string-array name="sort_display_values">
         <item>popularity.desc</item>
-        <item>vote_average.desc</item>
+        <item>top_rated.desc</item>
         <item>favorite</item>
     </string-array>
 
