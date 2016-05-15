@@ -27,13 +27,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
             if (savedInstanceState == null) {
+             //   setSupportActionBar(toolbar);
+
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.movie_detail_container, new DetailsActivityFragment(), DETAILFRAGMENT_TAG)
                         .commit();
             }
         } else {
             mTwoPane = false;
-            setSupportActionBar(toolbar);
+        //   setSupportActionBar(toolbar);
         }
         Log.i(TAG, "smallestScreenWidthDp :"+String.valueOf(getResources().getConfiguration().smallestScreenWidthDp));
         Log.i(TAG, "mTwoPane value=" + mTwoPane);
